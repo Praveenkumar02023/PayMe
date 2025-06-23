@@ -5,6 +5,6 @@ import userRouter from "./user";
 
 const router = Router();
 
-router.post('/user',userRouter)
+router.use('/user',userRouter)
 
 export default router;
