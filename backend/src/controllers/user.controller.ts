@@ -3,6 +3,7 @@ import { User } from "../models/user.model";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import {z} from "zod"
+import { AuthRequest } from "../middlewares/auth.middleware";
 
 
 const signupValidator = z.object({
@@ -105,4 +106,50 @@ export const siginController = async(req : Request , res : Response) : Promise<a
     res.status(411).json({error : "error while logging in"});
 
   }
+}
+
+const updateInfoValidator = z.object({
+    firstName : z.string().min(4).optional(),
+    lastName : z.string().min(1).optional(),
+    password : z.string().min(6).optional()
+})
+
+export const updateUserController = async(req: AuthRequest ,res:Response) : Promise<any> => {
+
+    const parsed = updateInfoValidator.safeParse(req.body);
+
+    if(!parsed.success){
+
+        return res.status(411).json({message : "invalid inputs"});
+
+    }
+
+    const userId = req.userId;
+    
+    // console.log(userId);
+
+    const {password} = parsed.data;
+
+    if(password){
+
+        const hashedPassword = await bcrypt.hash(password,10);
+        parsed.data.password = hashedPassword;
+
+    }
+
+   try {
+
+   const updatedUser =  await User.updateOne({_id : userId},parsed.data);
+
+    // console.log(updatedUser);
+    // console.log(parsed.data)
+
+    res.status(200).json({message : "Data updated successfully"});
+
+   } catch (error) {
+
+    res.status(411).json({message : "error updating detailes"});
+
+   }
+
 }
