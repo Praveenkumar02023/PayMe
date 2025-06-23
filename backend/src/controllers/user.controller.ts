@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import {z} from "zod"
 import { AuthRequest } from "../middlewares/auth.middleware";
+import { Account } from "../models/account.model";
 
 
 const signupValidator = z.object({
@@ -53,6 +54,8 @@ export const  signupController  = async(req : Request,res : Response , next:Next
         email : email,
         password : hashedPassword
     });
+
+    await Account.create({userId : newUser._id , balance : Math.floor((Math.random() * 10000) + 1)})
 
     await newUser.save();
 
