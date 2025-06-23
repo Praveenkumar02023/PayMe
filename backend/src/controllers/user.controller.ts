@@ -153,3 +153,41 @@ export const updateUserController = async(req: AuthRequest ,res:Response) : Prom
    }
 
 }
+
+
+const getUser = z.object({
+
+    firstName : z.string().min(4).optional(),
+    lastName : z.string().min(1).optional()
+})
+
+export const getUserByName = async(req : Request,res : Response) : Promise<any> =>{
+
+
+    const parsed = getUser.safeParse(req.body);
+
+    if(!parsed.success){
+
+        return res.status(400).json({message : "invalid inputs"});
+
+    }
+
+    try {
+        
+        const users = await User.find({
+            $or : [
+                {firstName : parsed.data.firstName },
+                {lastName : parsed.data.lastName}]
+            },
+                {firstName : 1 , lastName : 1 , _id : 1}
+            );
+
+
+        res.status(200).json({users});
+
+    } catch (error) {
+        
+        res.status(500).json({message : "Internal server error"});
+
+    }
+}
