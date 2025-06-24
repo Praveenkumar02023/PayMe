@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect,  useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 const Dashboard = () => {
@@ -7,11 +8,13 @@ const Dashboard = () => {
   const [balance , setBalance] = useState(null);
   const [users,setUsers] = useState<{_id : string , firstName :string , lastName: string}[]>([]);
   const nameRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
+   const token = localStorage.getItem("jwt");
 
   const getUsers = async()=>{    
     const firstName = nameRef.current?.value;
-    const token = localStorage.getItem("jwt");
+  
     try {
 
       const res = await axios.post('http://localhost:8000/api/v1/user/bulk',{
@@ -33,8 +36,6 @@ const Dashboard = () => {
 
   const getBalance = async()=>{
 
-    const token = localStorage.getItem("jwt");
-
     try {
 
       const res = await axios.get('http://localhost:8000/api/v1/account/balance',{
@@ -50,6 +51,7 @@ const Dashboard = () => {
     }
 
   }
+
 
   useEffect(()=>{
     getBalance();
@@ -94,7 +96,13 @@ const Dashboard = () => {
               </div>
              </div>
               
-              <button className="cursor-pointer hover:bg-gray-800 h-[100%] rounded-lg w-[8%] bg-black text-white" >send money</button></li>)}
+              <button onClick={()=> navigate('/send',{
+                state :{
+                  userId : u._id,
+                  firstName : u.firstName,
+                  lastName : u.lastName
+                }
+              })} className="cursor-pointer hover:bg-gray-800 h-[100%] rounded-lg w-[8%] bg-black text-white" >send money</button></li>)}
           </ul>
         </div>
 

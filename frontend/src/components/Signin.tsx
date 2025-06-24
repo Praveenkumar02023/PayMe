@@ -33,7 +33,7 @@ const Signin = () => {
 
         toast.success("Sign In Succesfull");
         navigate('/dashboard');
-        console.log(res.data);
+        // console.log(res.data);
         localStorage.setItem('jwt',res.data.jwt_token)
 
         

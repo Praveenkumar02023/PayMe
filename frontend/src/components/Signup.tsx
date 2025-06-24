@@ -33,11 +33,13 @@ const Signup = () => {
                 password
             });
 
-            toast.success("Sign In Successfull",{
+            toast.success("Sign Up Successfull",{
                 duration:3000
             });
+            localStorage.setItem('jwt',response.data.jwt_token)
             navigate('/dashboard');
-            console.log(response.data);
+            // console.log(response.data);
+
 
         }catch (error: any) {
   toast.error(

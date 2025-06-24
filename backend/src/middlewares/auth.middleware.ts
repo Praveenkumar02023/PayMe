@@ -16,17 +16,19 @@ export const authMiddleware = (req : AuthRequest , res : Response , next : NextF
     }
     
     const token = authHeader.split(' ')[1];
+    // console.log(token);
 
    try {
     
     const decoded = jwt.verify(token,process.env.JWT_SECRET!) as {userId : string};
 
     req.userId = decoded.userId;
-    
+    // console.log("nezt");
+        
     next();
 
    } catch (error) {
-    
+    // console.log("error")
     res.status(403).json({error : "error decoding token"});
     
    }

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../middlewares/auth.middleware";
-import { getBalance ,transferMoney } from "../controllers/accout.controller";
+import { getBalance ,transferMoney } from "../controllers/account.controller";
 
 
 

@@ -8,6 +8,6 @@ const userRouter = Router();
 userRouter.post('/signup',signupController);
 userRouter.post('/signin',siginController);
 userRouter.put('/update',authMiddleware,updateUserController);
-userRouter.get('/bulk',authMiddleware,getUserByName);
+userRouter.post('/bulk',authMiddleware,getUserByName);
 
 export default userRouter;

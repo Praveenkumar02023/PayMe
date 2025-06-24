@@ -63,7 +63,7 @@ export const  signupController  = async(req : Request,res : Response , next:Next
 
     return res.status(200).json({
         message : "User signup successfull",
-        jwt : jwt_token
+        jwt_token
     });
    } catch (error) {
         res.status(411).json({errors : "Internal server error"});
@@ -160,13 +160,13 @@ export const updateUserController = async(req: AuthRequest ,res:Response) : Prom
 
 const getUser = z.object({
 
-    firstName : z.string().min(4).optional(),
-    lastName : z.string().min(1).optional()
+    firstName : z.string().optional(),
+    lastName : z.string().optional()
 })
 
 export const getUserByName = async(req : Request,res : Response) : Promise<any> =>{
 
-
+    // console.log("hi there")
     const parsed = getUser.safeParse(req.body);
 
     if(!parsed.success){
@@ -174,16 +174,21 @@ export const getUserByName = async(req : Request,res : Response) : Promise<any> 
         return res.status(400).json({message : "invalid inputs"});
 
     }
-
+    // console.log(parsed.data)
     try {
         
-        const users = await User.find({
+        let users ;
+        if(!parsed.data.firstName && !parsed.data.lastName){
+            users = await User.find({},{_id : 1 , firstName : 1,lastName : 1});
+        }else{
+          users =  await User.find({
             $or : [
                 {firstName : parsed.data.firstName },
                 {lastName : parsed.data.lastName}]
             },
                 {firstName : 1 , lastName : 1 , _id : 1}
             );
+        }
 
 
         res.status(200).json({users});
