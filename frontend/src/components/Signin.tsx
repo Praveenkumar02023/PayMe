@@ -34,7 +34,9 @@ const Signin = () => {
         toast.success("Sign In Succesfull");
         navigate('/dashboard');
         console.log(res.data);
+        localStorage.setItem('jwt',res.data.jwt_token)
 
+        
       } catch (error : any) {
         toast.error(error?.response?.data?.error || "Something went Wrong");
       }
