@@ -5,12 +5,14 @@ import Signin from './components/Signin'
 import Signup from './components/signup'
 import Dashboard from './components/Dashboard'
 import SendMoney from './components/SendMoney'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
  
 
   return (
   <>
+  <Toaster  />
     <BrowserRouter>
       <Routes>
           <Route path='/signin' element={<Signin/>} />

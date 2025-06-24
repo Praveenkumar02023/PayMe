@@ -1,7 +1,52 @@
-import { Link } from "react-router-dom"
+import axios from "axios";
+import { useRef } from "react"
+import toast from "react-hot-toast";
+import { Link , useNavigate} from "react-router-dom"
 
 
 const Signup = () => {
+
+    const firstNameRef = useRef<HTMLInputElement>(null);
+    const lastNameRef = useRef<HTMLInputElement>(null);
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
+
+    const handleSignUp = async()=>{
+
+        const firstName = firstNameRef.current?.value
+        const lastName = lastNameRef.current?.value
+        const email = emailRef.current?.value
+        const password = passwordRef.current?.value
+
+        if(!firstName || !lastName || !email || !password) {
+            toast.error("Invalid Inputs");
+            return;
+        }
+
+        try {
+            
+            const response = await axios.post('http://localhost:8000/api/v1/user/signup',{
+                firstName,
+                lastName,
+                email,
+                password
+            });
+
+            toast.success("Sign In Successfull",{
+                duration:3000
+            });
+            navigate('/dashboard');
+            console.log(response.data);
+
+        }catch (error: any) {
+  toast.error(
+    error?.response?.data?.error || "Something went wrong"
+  );
+    }
+}
+
+
   return (
    <div className="h-screen w-screen bg-gray-400 flex flex-col items-center justify-center">
 
@@ -16,22 +61,26 @@ const Signup = () => {
 
              <div className="mt-4">
                 <h4 className="text-black font-semibold">First Name</h4>
-                <input className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text" placeholder="enter your first name"/>
+                
+                <input ref={firstNameRef} className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text" placeholder="John"/>
             </div>
             <div className="mt-4">
                 <h4 className="text-black font-semibold">Last Name</h4>
-                <input className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text" placeholder="enter your last name"/>
+                
+                <input ref={lastNameRef} className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text" placeholder="Doe"/>
             </div>
             <div className="mt-4">
                 <h4 className="text-black font-semibold">Email</h4>
-                <input className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text" placeholder="enter your email"/>
+                
+                <input ref={emailRef} className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text" placeholder="John@gmail.com"/>
             </div>
             <div className="mt-4">
                 <h4 className="text-black font-semibold">Password</h4>
-                <input className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text"/>
+                
+                <input ref={passwordRef} className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="password"/>
             </div>
 
-            <button className="cursor-pointer hover:bg-gray-800 mt-4 bg-black text-white font-bold w-[100%] h-10 rounded ">
+            <button onClick={handleSignUp} className="cursor-pointer hover:bg-gray-800 mt-4 bg-black text-white font-bold w-[100%] h-10 rounded ">
                 Sign Up
             </button>
             <div className="text-center text-black font-semibold mt-4">

@@ -1,6 +1,46 @@
-import { Link } from "react-router-dom"
+import { useRef } from "react"
+import toast from "react-hot-toast"
+import { Link, useNavigate } from "react-router-dom"
+import axios from 'axios'
+
+
 
 const Signin = () => {
+
+    const emailRef = useRef<HTMLInputElement>(null)
+    const passwordRef = useRef<HTMLInputElement>(null)
+    const navigate = useNavigate();
+
+
+    const handleSignIn = async()=>{
+
+      const email = emailRef.current?.value
+      const password = passwordRef.current?.value
+
+      if(!email || !password){
+
+        toast.error("Invalid Inputs");
+        return;
+      }
+
+      try {
+      
+        
+        const res = await axios.post('http://localhost:8000/api/v1/user/signin',{
+          email,
+          password
+        });
+
+        toast.success("Sign In Succesfull");
+        navigate('/dashboard');
+        console.log(res.data);
+
+      } catch (error : any) {
+        toast.error(error?.response?.data?.error || "Something went Wrong");
+      }
+
+    }
+
   return (
     (
    <div className="h-screen w-screen bg-gray-400 flex flex-col items-center justify-center">
@@ -15,14 +55,16 @@ const Signin = () => {
             </div>
             <div className="mt-4">
                 <h4 className="text-black font-semibold">Email</h4>
-                <input className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text" placeholder="enter your email"/>
+                
+                <input ref={emailRef} className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text" placeholder="John@gmail.com"/>
             </div>
             <div className="mt-4">
                 <h4 className="text-black font-semibold">Password</h4>
-                <input className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text"/>
+               
+                <input ref={passwordRef} className="mt-2 px-2 rounded border-gray-400 h-10 justify-center border w-[100%] " type="text"/>
             </div>
 
-            <button className="cursor-pointer hover:bg-gray-800 mt-4 bg-black text-white font-bold w-[100%] h-10 rounded ">
+            <button onClick={handleSignIn} className="cursor-pointer hover:bg-gray-800 mt-4 bg-black text-white font-bold w-[100%] h-10 rounded ">
                 Sign In
             </button>
             <div className="text-center text-black font-semibold mt-4">
